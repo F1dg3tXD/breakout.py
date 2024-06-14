@@ -34,13 +34,14 @@ jobs:
           mkdir dist\sounds
           xcopy /E /I sounds dist\sounds
 
+      - name: Zip dist folder
+        run: powershell Compress-Archive -Path dist -DestinationPath dist.zip
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: breakout_py-windows-binary
-          path: |
-            dist\*            # Include all files in the breakout directory
-            sounds\*          # Include all files in the sounds directory
+          path: dist.zip
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -64,10 +65,11 @@ jobs:
           mkdir -p dist/sounds
           cp -r sounds dist/sounds
 
+      - name: Zip dist folder
+        run: zip -r dist.zip dist
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: breakout_py-ubuntu-binary
-          path: |
-            dist/*            # Include all files in the breakout directory
-            sounds/*          # Include all files in the sounds directory
+          path: dist.zip
