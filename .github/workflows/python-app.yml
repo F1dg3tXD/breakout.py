@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v2
         with:
           python-version: '3.10'
 
@@ -37,8 +37,10 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: windows-binary
-          path: dist\breakout\*
+          name: breakout_py-windows-binary
+          path: |
+            dist\breakout\*  # Include all files in the breakout directory
+            sounds\*          # Include all files in the sounds directory
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -47,7 +49,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v2
         with:
           python-version: '3.10'
 
@@ -55,7 +57,7 @@ jobs:
         run: pip install -r requirements.txt pyinstaller
 
       - name: Build binary
-        run: pyinstaller -F --noconsole -n breakout_DOT_py hbreakout.py
+        run: pyinstaller -F --noconsole -n breakout_py hbreakout.py
 
       - name: Copy sounds directory
         run: |
@@ -65,5 +67,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ubuntu-binary
-          path: dist/breakout/*
+          name: breakout_py-ubuntu-binary
+          path: |
+            dist/breakout/*  # Include all files in the breakout directory
+            sounds/*          # Include all files in the sounds directory
