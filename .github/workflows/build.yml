@@ -1,3 +1,5 @@
+name: Build All
+
 on:
   push:
 
