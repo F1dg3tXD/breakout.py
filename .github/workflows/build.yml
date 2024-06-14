@@ -1,27 +1,66 @@
-name: Build All
+# This workflow will install Python dependencies, build the binaries for Windows and Ubuntu, and copy the "sounds" directory.
 
-on: 
-  workflow_dispatch
+name: Manual Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ['windows-latest', 'ubuntu-latest, 'macos-latest']
+  build-windows:
+    runs-on: windows-latest
 
     steps:
-- uses: actions/checkout@v4
-- uses: actions/setup-python@v5
-  with:
-    python-version: '3.10' 
-- run: python hbreakout.py
+      - uses: actions/checkout@v4
 
-    - run: pip install -r requirements.txt pyinstaller
-    - run: pyinstaller -F --noconsole -n breakout.py hbreakout.py
-    # Optionally verify that it works (provided that it does not need user interaction)
-    - run: ./dist/your-code/your-code
-    - uses: actions/upload-artifact@v2
-      with:
-        path: dist/*
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+
+      - name: Build binary
+        run: pyinstaller -F --noconsole -n breakout.py hbreakout.py
+
+      - name: Copy sounds directory
+        run: |
+          mkdir dist\breakout\sounds
+          xcopy /E /I sounds dist\breakout\sounds
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-binary
+          path: dist\breakout\*
+
+  build-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+
+      - name: Build binary
+        run: pyinstaller -F --noconsole -n breakout.py hbreakout.py
+
+      - name: Copy sounds directory
+        run: |
+          mkdir -p dist/breakout/sounds
+          cp -r sounds dist/breakout/sounds
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ubuntu-binary
+          path: dist/breakout/*
