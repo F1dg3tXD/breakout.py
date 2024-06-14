@@ -31,15 +31,15 @@ jobs:
 
       - name: Copy sounds directory
         run: |
-          mkdir dist\breakout\sounds
-          xcopy /E /I sounds dist\breakout\sounds
+          mkdir dist\sounds
+          xcopy /E /I sounds dist\sounds
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: breakout_py-windows-binary
           path: |
-            dist\breakout\*  # Include all files in the breakout directory
+            dist\*            # Include all files in the breakout directory
             sounds\*          # Include all files in the sounds directory
 
   build-ubuntu:
@@ -61,13 +61,13 @@ jobs:
 
       - name: Copy sounds directory
         run: |
-          mkdir -p dist/breakout/sounds
-          cp -r sounds dist/breakout/sounds
+          mkdir -p dist/sounds
+          cp -r sounds dist/sounds
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: breakout_py-ubuntu-binary
           path: |
-            dist/breakout/*  # Include all files in the breakout directory
+            dist/*            # Include all files in the breakout directory
             sounds/*          # Include all files in the sounds directory
