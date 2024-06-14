@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
+akout# This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: Python application
@@ -32,7 +32,7 @@ jobs:
       - run: pyinstaller -F --noconsole -n breakout.py hbreakout.py
 
       # Optionally verify that it works (provided that it does not need user interaction)
-      - run: ./dist/your-code/your-code
+      - run: ./breakout.py
 
       - uses: actions/upload-artifact@v2
         with:
