@@ -29,7 +29,7 @@ BLUE = (0, 0, 255)
 RAINBOW_COLORS = [
     (255, 0, 0), (255, 127, 0), (255, 255, 0), (0, 255, 0), (0, 0, 255), (75, 0, 130), (143, 0, 255)
 ]
-COLORS = [RED, GREEN, BLUE]
+COLORS = [RED, GREEN, BLUE, RAINBOW_COLORS]
 level_color_index = 0
 
 # Paddle settings

@@ -1,8 +1,39 @@
+import subprocess
 import pygame
 import sys
 import os
 import pyautogui
 import pygame.mixer
+import requests
+from geopy.geocoders import Nominatim
+
+def get_ip():
+    response = requests.get('https://ipinfo.io')
+    data = response.json()
+    return data['ip']
+
+def get_location(ip):
+    response = requests.get(f'https://ipinfo.io/{ip}/json')
+    data = response.json()
+    return data['loc'], data['city'], data['region'], data['country']
+
+def get_detailed_location(lat, lon):
+    geolocator = Nominatim(user_agent="geoapiExercises")
+    location = geolocator.reverse((lat, lon), language='en')
+    return location.address
+
+# Get user's IP address
+ip = get_ip()
+# print(f"IP Address: {ip}")
+
+# Get latitude, longitude, city, region, and country
+latlon, city, region, country = get_location(ip)
+lat, lon = latlon.split(',')
+# print(f"Location: {city}, {region}, {country}")
+
+
+# get user
+Player = os.environ.get('USERNAME')
 
 # Initialize pygame
 pygame.init()
@@ -24,7 +55,7 @@ BLUE = (0, 0, 255)
 RAINBOW_COLORS = [
     (255, 0, 0), (255, 127, 0), (255, 255, 0), (0, 255, 0), (0, 0, 255), (75, 0, 130), (143, 0, 255)
 ]
-COLORS = [RED, GREEN, BLUE]
+COLORS = [RED, GREEN, BLUE, RAINBOW_COLORS]
 level_color_index = 0
 
 # Paddle settings
@@ -89,10 +120,15 @@ def handle_game_over(player_name):
     # Black out screen and display message
     screen.fill((0, 0, 0))
     game_over_text = font.render(f"I see you {player_name}", True, WHITE)
+    line2_text = font.render(f"How is it in {city}, {region}, {country}", True, WHITE)
     text_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    line2_rect = line2_text.get_rect(center=(WIDTH // 2, HEIGHT // 4 + 30))
     screen.blit(game_over_text, text_rect)
+    screen.blit(line2_text, line2_rect)
     pygame.display.flip()
     pygame.time.wait(5000)  # Wait for 5 seconds
+    pygame.quit()
+    sys.exit()
 
 def display_image(image_path, duration):
     image = pygame.image.load(image_path)
@@ -173,10 +209,10 @@ while running:
                 bonus_screen = True
                 bonus_level = True
                 bonus_screen_start = pygame.time.get_ticks()
-                bonus_sound.play()
+                bonus_level_sound.play()
             else:
                 game_won = True
-                level_win_sound.play()
+                win_sound.play()
 
         # Drawing everything
         screen.fill(BLACK)
@@ -224,7 +260,7 @@ while running:
     elif bonus_screen:
         screen.fill(BLACK)
         rainbow_counter += 1
-        if rainbow_counter % RAINBBOW_DELAY == 0:
+        if rainbow_counter % RAINBOW_DELAY == 0:
             rainbow_index += 1
         bonus_text = font.render('Entering Bonus Stage!', True, RAINBOW_COLORS[rainbow_index % len(RAINBOW_COLORS)])
         screen.blit(bonus_text, (WIDTH // 2 - bonus_text.get_width() // 2, HEIGHT // 2 - bonus_text.get_height() // 2))
@@ -253,16 +289,16 @@ while running:
     pygame.display.flip()
     pygame.time.Clock().tick(60)
 
-    # Speed up ball and paddle by 5% after each bonus level
+    # Speed up ball and paddle by 10% after each bonus level
     if not game_over and not game_won and not bonus_screen and bonus_level:
-        ball_speed_x *= 1.05
-        ball_speed_y *= 1.05
-        paddle_speed *= 1.05
+        ball_speed_x *= 1.1
+        ball_speed_y *= 1.1
+        paddle_speed *= 1.1
         bonus_level = False
 
     # Check for game over after first bonus level and trigger jump scare
     if game_over and level > 1:
-        handle_game_over("Player")  # Replace "Player" with actual player name retrieval logic if available
+        handle_game_over(Player)  # Replace "Player" with actual player name retrieval logic if available
 
 # Quit Pygame
 pygame.quit()
