@@ -35,7 +35,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-binary
-          path: dist\breakout\*
+          path: |
+            dist\breakout\*.exe
+            dist\breakout\sounds\*
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -63,4 +65,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ubuntu-binary
-          path: dist/breakout/*
+          path: |
+            dist/breakout/*
