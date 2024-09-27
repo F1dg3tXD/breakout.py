@@ -205,7 +205,7 @@ while running:
 
         # Check for win condition
         if not bricks:
-            if level % 3 == 0:
+            if level % 3 == 0 and not bonus_level:
                 bonus_screen = True
                 bonus_level = True
                 bonus_screen_start = pygame.time.get_ticks()
@@ -266,6 +266,7 @@ while running:
         screen.blit(bonus_text, (WIDTH // 2 - bonus_text.get_width() // 2, HEIGHT // 2 - bonus_text.get_height() // 2))
         if pygame.time.get_ticks() - bonus_screen_start >= BONUS_SCREEN_DELAY:
             bonus_screen = False
+            bonus_level = True  # Now the bonus level starts
             ball.x, ball.y = (WIDTH // 2) - (BALL_SIZE // 2), HEIGHT // 2
             ball_speed_x, ball_speed_y = 5, -5
             create_bricks()
@@ -301,5 +302,8 @@ while running:
         handle_game_over(Player)  # Replace "Player" with actual player name retrieval logic if available
 
 # Quit Pygame
+pygame.quit()
+sys.exit()
+
 pygame.quit()
 sys.exit()
