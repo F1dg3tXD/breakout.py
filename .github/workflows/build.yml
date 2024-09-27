@@ -28,7 +28,9 @@ jobs:
 
       - name: Copy sounds directory
         run: |
-          mkdir dist\breakout\sounds
+          mkdir dist\win\breakout
+          move dist\breakout.exe dist\win\breakout\
+          mkdir dist\win\breakout\sounds
           xcopy /E /I sounds dist\breakout\sounds
 
       - name: Upload artifact
@@ -36,10 +38,11 @@ jobs:
         with:
           name: windows-binary
           path: |
-            dist\breakout.exe  # Corrected to match output binary
-            dist\breakout\sounds\*
+            dist\win\breakout\breakout.exe
+            dist\win\breakout\*
+            dist\win\breakout\sounds\*
 
-  build-ubuntu:
+    build-ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -56,15 +59,19 @@ jobs:
       - name: Build binary
         run: pyinstaller -F --noconsole -n breakout hbreakout.py  # Ubuntu binary
 
-      - name: Copy sounds directory
+      - name: Create output directory and copy sounds
         run: |
-          mkdir -p dist/breakout/sounds
-          cp -r sounds dist/breakout/sounds
+          mkdir -p dist/output/breakout
+          mv dist/breakout dist/output/breakout  # Move binary to new location
+          mkdir -p dist/output/sounds
+          cp -r sounds/* dist/output/sounds/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ubuntu-binary
           path: |
-            dist/breakout  # Include the binary file without extension
-            dist/breakout/sounds/*
+            dist/output/breakout  # Path to the binary
+            dist/output/*
+            dist/output/sounds/*  # Path to the sounds
+
