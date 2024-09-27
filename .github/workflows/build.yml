@@ -32,7 +32,7 @@ jobs:
           xcopy /E /I sounds dist\breakout\sounds
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: windows-binary
           path: dist\breakout\*
@@ -60,7 +60,7 @@ jobs:
           cp -r sounds dist/breakout/sounds
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ubuntu-binary
           path: dist/breakout/*
