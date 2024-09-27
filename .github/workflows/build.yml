@@ -24,22 +24,21 @@ jobs:
         run: pip install -r requirements.txt pyinstaller
 
       - name: Build binary
-        run: pyinstaller -F --noconsole -n breakout hbreakout.py
+        run: pyinstaller -F --noconsole -n breakout.py hbreakout.py
 
-      - name: Move binary and create sounds folder
+      - name: Copy sounds directory
         run: |
-          mkdir dist\windows-output\breakout
-          move dist\breakout.exe dist\windows-output\breakout\  # Move binary to ensure it's in the right folder
-          mkdir dist\windows-output\sounds
-          xcopy /E /I sounds dist\windows-output\sounds
+          mkdir dist\sounds
+          xcopy /E /I sounds dist\sounds
+
+      - name: Zip dist folder
+        run: powershell Compress-Archive -Path dist -DestinationPath dist.zip
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: windows-binary
-          path: |
-            dist/windows-output/breakout/*  # Ensure the binary is included
-            dist/windows-output/sounds/*  # Include sounds
+          name: breakout_py-windows-binary
+          path: dist.zip
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -56,19 +55,18 @@ jobs:
         run: pip install -r requirements.txt pyinstaller
 
       - name: Build binary
-        run: pyinstaller -F --noconsole -n breakout hbreakout.py
+        run: pyinstaller -F --noconsole -n breakout_py hbreakout.py
 
-      - name: Move binary and create sounds folder
+      - name: Copy sounds directory
         run: |
-          mkdir -p dist/ubuntu-output/breakout
-          mv dist/breakout dist/ubuntu-output/breakout/  # Move binary to ensure it's in the right folder
-          mkdir -p dist/ubuntu-output/sounds
-          cp -r sounds dist/ubuntu-output/sounds
+          mkdir -p dist/sounds
+          cp -r sounds dist/sounds
+
+      - name: Zip dist folder
+        run: zip -r dist.zip dist
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-binary
-          path: |
-            dist/ubuntu-output/breakout/*  # Ensure the binary is included
-            dist/ubuntu-output/sounds/*  # Include sounds
+          name: breakout_py-ubuntu-binary
+          path: dist.zip
