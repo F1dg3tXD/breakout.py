@@ -24,7 +24,7 @@ jobs:
         run: pip install -r requirements.txt pyinstaller
 
       - name: Build binary
-        run: pyinstaller -F --noconsole -n breakout.py hbreakout.py
+        run: pyinstaller -F --noconsole -n breakout.exe hbreakout.py  # Use .exe as the name
 
       - name: Copy sounds directory
         run: |
@@ -36,7 +36,7 @@ jobs:
         with:
           name: windows-binary
           path: |
-            dist\breakout\*.exe
+            dist\breakout.exe  # Corrected to match output binary
             dist\breakout\sounds\*
 
   build-ubuntu:
@@ -54,7 +54,7 @@ jobs:
         run: pip install -r requirements.txt pyinstaller
 
       - name: Build binary
-        run: pyinstaller -F --noconsole -n breakout.py hbreakout.py
+        run: pyinstaller -F --noconsole -n breakout hbreakout.py  # Ubuntu binary
 
       - name: Copy sounds directory
         run: |
@@ -66,4 +66,5 @@ jobs:
         with:
           name: ubuntu-binary
           path: |
-            dist/breakout/*
+            dist/breakout  # Include the binary file without extension
+            dist/breakout/sounds/*
