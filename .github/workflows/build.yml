@@ -24,54 +24,51 @@ jobs:
         run: pip install -r requirements.txt pyinstaller
 
       - name: Build binary
-        run: pyinstaller -F --noconsole -n breakout.exe hbreakout.py  # Use .exe as the name
+        run: pyinstaller -F --noconsole -n breakout hbreakout.py
 
-      - name: Copy sounds directory
+      - name: Move binary and create sounds folder
         run: |
-          mkdir dist\win\breakout
-          move dist\breakout.exe dist\win\breakout\
-          mkdir dist\win\breakout\sounds
-          xcopy /E /I sounds dist\breakout\sounds
+          mkdir dist\windows-output\breakout
+          move dist\breakout.exe dist\windows-output\breakout\  # Move binary to ensure it's in the right folder
+          mkdir dist\windows-output\sounds
+          xcopy /E /I sounds dist\windows-output\sounds
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-binary
           path: |
-            dist\win\breakout\breakout.exe
-            dist\win\breakout\*
-            dist\win\breakout\sounds\*
+            dist/windows-output/breakout/*  # Ensure the binary is included
+            dist/windows-output/sounds/*  # Include sounds
 
-    build-ubuntu:
-      runs-on: ubuntu-latest
+  build-ubuntu:
+    runs-on: ubuntu-latest
 
-      steps:
-        - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-        - name: Set up Python
-          uses: actions/setup-python@v5
-          with:
-            python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-        - name: Install dependencies
-          run: pip install -r requirements.txt pyinstaller
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
 
-        - name: Build binary
-          run: pyinstaller -F --noconsole -n breakout hbreakout.py  # Ubuntu binary
+      - name: Build binary
+        run: pyinstaller -F --noconsole -n breakout hbreakout.py
 
-        - name: Create output directory and copy sounds
-          run: |
-            mkdir -p dist/output/breakout
-            mv dist/breakout dist/output/breakout  # Move binary to new location
-            mkdir -p dist/output/sounds
-            cp -r sounds/* dist/output/sounds/
+      - name: Move binary and create sounds folder
+        run: |
+          mkdir -p dist/ubuntu-output/breakout
+          mv dist/breakout dist/ubuntu-output/breakout/  # Move binary to ensure it's in the right folder
+          mkdir -p dist/ubuntu-output/sounds
+          cp -r sounds dist/ubuntu-output/sounds
 
-        - name: Upload artifact
-          uses: actions/upload-artifact@v4
-          with:
-            name: ubuntu-binary
-            path: |
-              dist/output/breakout  # Path to the binary
-              dist/output/*
-              dist/output/sounds/*  # Path to the sounds
-
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-binary
+          path: |
+            dist/ubuntu-output/breakout/*  # Ensure the binary is included
+            dist/ubuntu-output/sounds/*  # Include sounds
